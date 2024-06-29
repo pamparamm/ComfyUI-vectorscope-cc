@@ -1,14 +1,14 @@
 [project]
 name = "comfyui-vectorscope-cc"
-description = "ComfyUI port of a wonderful extension [a/SD Webui Vectorscope CC by Haoming02](https://github.com/Haoming02/sd-webui-vectorscope-cc).\nBased on (and probably incompatible with) [a/ComfyUI Diffusion Color Grading by Haoming02](https://github.com/Haoming02/comfyui-diffusion-cg)."
+description = "ComfyUI port of Vectorscope CC extension by Haoming02. Makes it possible to adjust Brightness/Contrast/Saturation/Hue during image generation."
 version = "1.0.0"
-license = "LICENSE"
+license = "MIT"
 
 [project.urls]
 Repository = "https://github.com/pamparamm/ComfyUI-vectorscope-cc"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "pamparamm"
 DisplayName = "ComfyUI-vectorscope-cc"
 Icon = ""
