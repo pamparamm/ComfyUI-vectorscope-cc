@@ -31,6 +31,7 @@ class CallbackManager:
                 if params:
                     callbacks.append(cb(params))
             callbacks.append(original_callback)
+            callbacks = [cb for cb in callbacks if cb is not None]
 
             def callback(step: int, x0: torch.Tensor, x: torch.Tensor, total_steps: int):
                 for cb in callbacks:
