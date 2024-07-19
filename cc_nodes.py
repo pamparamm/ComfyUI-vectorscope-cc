@@ -28,7 +28,7 @@ class VectorscopeCC:
 
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "hook"
-    CATEGORY = "model"
+    CATEGORY = "model_patches/unet"
 
     PARAMS_NAME = "vectorscope_cc"
 
