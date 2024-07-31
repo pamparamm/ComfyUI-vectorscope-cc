@@ -2,7 +2,7 @@
 name = "comfyui-vectorscope-cc"
 description = "ComfyUI port of Vectorscope CC extension by Haoming02. Makes it possible to adjust Brightness/Contrast/Saturation/Hue during image generation."
 version = "1.0.2"
-license = "MIT"
+license = { text = "Other" }
 
 [project.urls]
 Repository = "https://github.com/pamparamm/ComfyUI-vectorscope-cc"
