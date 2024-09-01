@@ -17,5 +17,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 cb_manager = CallbackManager()
 cb_manager.hijack_samplers()
 
-cb_manager.register_callback(VectorscopeCC.PARAMS_NAME, VectorscopeCC.callback)
-cb_manager.register_callback(DiffusionCG.PARAMS_NAME, DiffusionCG.callback)
+cb_manager.register_callback(VectorscopeCC.PARAMS_NAME, VectorscopeCC.callback, 210)
+cb_manager.register_callback(DiffusionCG.PARAMS_NAME, DiffusionCG.callback, 211)

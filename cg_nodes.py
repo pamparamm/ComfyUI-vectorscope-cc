@@ -62,6 +62,6 @@ class DiffusionCG:
                         latent[b][c] += -target[b][c].mean() * recenter_strength
 
                     if normalize:
-                        latent[b][c] = normalize_tensor(target[b][c], dynamic_range)
+                        latent[b][c] = normalize_tensor(latent[b][c], dynamic_range)
 
         return _callback
