@@ -42,8 +42,8 @@ def apply_scaling(
 
 def RGB_2_CbCr(r: float, g: float, b: float) -> tuple[float, float]:
     """Convert RGB channels into YCbCr for SDXL"""
-    cb = -0.15 * r - 0.29 * g + 0.44 * b
-    cr = 0.44 * r - 0.37 * g - 0.07 * b
+    cb = -0.17 * r - 0.33 * g + 0.5 * b
+    cr = 0.5 * r - 0.42 * g - 0.08 * b
 
     return cb, cr
 
@@ -100,3 +100,9 @@ class NoiseMethods:
                     break
 
         return noise / noise.std()
+
+
+def normalize_tensor(x: Tensor, r):
+    ratio = r / max(abs(float(x.min())), abs(float(x.max())))
+    x *= max(ratio, 1.0)
+    return x

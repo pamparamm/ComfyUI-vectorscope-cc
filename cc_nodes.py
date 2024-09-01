@@ -1,8 +1,8 @@
 from torch import Tensor
 import comfy.latent_formats
+from comfy.model_patcher import ModelPatcher
 
-from .cc_callback import CallbackManager
-from .cc_utils import NoiseMethods, apply_scaling, RGB_2_CbCr
+from .utils import NoiseMethods, apply_scaling, RGB_2_CbCr, normalize_tensor
 
 
 class VectorscopeCC:
@@ -12,12 +12,12 @@ class VectorscopeCC:
             "required": {
                 "model": ("MODEL",),
                 "alt": ("BOOLEAN", {"default": False}),
-                "brightness": ("FLOAT", {"default": 0.0, "min": -5.0, "max": 5.0, "step": 0.05}),
-                "contrast": ("FLOAT", {"default": 0.0, "min": -5.0, "max": 5.0, "step": 0.05}),
-                "saturation": ("FLOAT", {"default": 1.0, "min": 0.25, "max": 1.75, "step": 0.05}),
-                "r": ("FLOAT", {"default": 0.0, "min": -4.0, "max": 4.0, "step": 0.05}),
-                "g": ("FLOAT", {"default": 0.0, "min": -4.0, "max": 4.0, "step": 0.05}),
-                "b": ("FLOAT", {"default": 0.0, "min": -4.0, "max": 4.0, "step": 0.05}),
+                "brightness": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.05}),
+                "contrast": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.05}),
+                "saturation": ("FLOAT", {"default": 1.0, "min": 0.05, "max": 3.0, "step": 0.05}),
+                "r": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.05}),
+                "g": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.05}),
+                "b": ("FLOAT", {"default": 0.0, "min": -10.0, "max": 10.0, "step": 0.05}),
                 "method": (
                     ["Straight", "Straight Abs.", "Cross", "Cross Abs.", "Ones", "N.Random", "U.Random", "Multi-Res", "Multi-Res Abs."],
                     {"default": "Straight Abs."},
@@ -34,7 +34,7 @@ class VectorscopeCC:
 
     def hook(
         self,
-        model,
+        model: ModelPatcher,
         alt: bool,
         brightness: float,
         contrast: float,
@@ -64,7 +64,7 @@ class VectorscopeCC:
         return (m,)
 
     @staticmethod
-    def callback_vectorscope(params: tuple):
+    def callback(params: tuple):
         def _callback(step: int, x0: Tensor, x: Tensor, total_steps: int):
             (
                 latent_format,
@@ -138,7 +138,7 @@ class VectorscopeCC:
 
                         # CbCr
                         latent[b][1] -= target[b][1] * cr
-                        latent[b][2] += target[b][2] * cb
+                        latent[b][2] -= target[b][2] * cb
 
                         # Saturation
                         latent[b][1] *= saturation
@@ -163,17 +163,12 @@ class NormalizeLatent:
 
     @staticmethod
     def _normalize_latent(latent: Tensor, dynamic_range: list[int]):
-        def _normalize_tensor(x: Tensor, r):
-            ratio = r / max(abs(float(x.min())), abs(float(x.max())))
-            x *= max(ratio, 0.99)
-            return x
-
         bs, _, _, _ = latent.shape
         for b in range(bs):
             for c in range(len(dynamic_range)):
-                latent[b][c] = _normalize_tensor(latent[b][c], dynamic_range[c])
+                latent[b][c] = normalize_tensor(latent[b][c], dynamic_range[c])
 
-    def normalize(self, latent, model):
+    def normalize(self, latent, model: ModelPatcher):
         latent_image = latent["samples"].detach().clone()
         latent_format = type(model.model.latent_format)
 
@@ -184,9 +179,3 @@ class NormalizeLatent:
                 NormalizeLatent._normalize_latent(latent_image, [20, 16, 16])
 
         return ({"samples": latent_image},)
-
-
-cb_manager = CallbackManager()
-cb_manager.hijack_samplers()
-
-cb_manager.register_callback(VectorscopeCC.PARAMS_NAME, VectorscopeCC.callback_vectorscope)

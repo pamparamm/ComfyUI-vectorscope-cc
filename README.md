@@ -1,8 +1,8 @@
-# ComfyUI Vectorscope CC
+# ComfyUI Vectorscope CC | ComfyUI DIffusion CG
 
-ComfyUI port of a wonderful extension [SD Webui Vectorscope CC by Haoming02](https://github.com/Haoming02/sd-webui-vectorscope-cc).
+ComfyUI port of wonderful [SD Webui Vectorscope CC](https://github.com/Haoming02/sd-webui-vectorscope-cc) and [SD Webui Diffusion Color Grading](https://github.com/Haoming02/sd-webui-diffusion-cg) extensions by Haoming02.
 
-Based on (and probably incompatible with) [ComfyUI Diffusion Color Grading by Haoming02](https://github.com/Haoming02/comfyui-diffusion-cg).
+Based on (and probably incompatible with) [original ComfyUI port of Diffusion CG by Haoming02](https://github.com/Haoming02/comfyui-diffusion-cg).
 
 # Nodes
 
@@ -12,7 +12,18 @@ Based on (and probably incompatible with) [ComfyUI Diffusion Color Grading by Ha
 
 `VectorscopeCC` node works similar to the [original Vectorscope-CC extension](https://github.com/Haoming02/sd-webui-vectorscope-cc?tab=readme-ov-file#how-to-use), but without fancy color wheel :(
 
+## DiffusionCG
+
+![diffusion-cg-node](assets/diffusion-cg.png)
+
+`DiffusionCG` allows you to recenter and normalize latent noise during generation. You can read more about it's capabilities [here](https://github.com/Haoming02/sd-webui-diffusion-cg?tab=readme-ov-file#features).
+
+Unlike the [original ComfyUI port](https://github.com/Haoming02/comfyui-diffusion-cg), mine has parity with SD WebUI version (except color adjusting features - you can use `DiffusionCG` together with `VectorscopeCC` node for that).
+
 ## NormalizeLatent
+> [!WARNING]
+> Deprecated, use normalization from `DiffusionCG` node instead.
+
 ![normalize-node](assets/normalize.png)
 
 `NormalizeLatent` node enhances vibrancy and contrast of an image. You can read more about normalization [here](https://github.com/Haoming02/sd-webui-diffusion-cg?tab=readme-ov-file#normalization).
