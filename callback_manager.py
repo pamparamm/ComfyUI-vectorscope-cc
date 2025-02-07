@@ -2,6 +2,7 @@ from typing import Callable
 import torch
 import comfy.latent_formats
 import comfy.sample
+import comfy.samplers
 
 
 class CallbackManager:
@@ -15,6 +16,9 @@ class CallbackManager:
         if not hasattr(comfy.sample, "sample_custom_original"):
             comfy.sample.sample_custom_original = comfy.sample.sample_custom
             comfy.sample.sample_custom = self.sample_wrapper(comfy.sample.sample_custom_original)
+        if not hasattr(comfy.samplers.CFGGuider, "sample_original"):
+            comfy.samplers.CFGGuider.sample_original = comfy.samplers.CFGGuider.sample
+            comfy.samplers.CFGGuider.sample = self.sample_wrapper(comfy.samplers.CFGGuider.sample_original)
 
     def register_callback(self, params_name: str, callback_func: Callable[[tuple], Callable], priority: int):
         self.callbacks[params_name] = callback_func, priority
@@ -23,7 +27,10 @@ class CallbackManager:
         def sample(*args, **kwargs):
             model = args[0]
 
-            original_cb = kwargs["callback"]
+            try:
+                original_cb = kwargs["callback"]
+            except KeyError:
+                return original_sample(*args, **kwargs)
             original_cb_priority = 1000
 
             callbacks = []
